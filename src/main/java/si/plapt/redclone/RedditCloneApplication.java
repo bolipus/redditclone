@@ -8,10 +8,13 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 
+
+import lombok.extern.slf4j.Slf4j;
 import si.plapt.redclone.config.RedditCloneProperties;
 
 @SpringBootApplication
 @EnableConfigurationProperties(RedditCloneProperties.class)
+@Slf4j
 public class RedditCloneApplication {
 
 	@Autowired
@@ -25,6 +28,7 @@ public class RedditCloneApplication {
 	CommandLineRunner welcome(){
 		return (args) -> {
 			System.out.println("Welcome message:" + prop.getWelcomeMessage());
+			log.debug("Start application");
 		};		
 	}
 
