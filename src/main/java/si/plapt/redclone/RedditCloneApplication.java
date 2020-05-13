@@ -7,13 +7,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
-
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import lombok.extern.slf4j.Slf4j;
 import si.plapt.redclone.config.RedditCloneProperties;
 
 @SpringBootApplication
 @EnableConfigurationProperties(RedditCloneProperties.class)
+@EnableJpaAuditing
 @Slf4j
 public class RedditCloneApplication {
 

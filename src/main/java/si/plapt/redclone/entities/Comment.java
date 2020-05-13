@@ -1,7 +1,5 @@
 package si.plapt.redclone.entities;
 
-
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -18,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @Entity
-public class Comment {
+public class Comment extends Auditable{
   
   @Id
   @GeneratedValue
@@ -32,5 +30,7 @@ public class Comment {
 
   @ManyToOne
   private Link link; 
+
+  
 
 }
