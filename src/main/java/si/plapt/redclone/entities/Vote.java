@@ -4,8 +4,7 @@ package si.plapt.redclone.entities;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-
-import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
+import javax.persistence.ManyToOne;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,9 +22,7 @@ public class Vote {
   private long id;
 
   @NonNull
-  private User user;
-
-  @NonNull
+  @ManyToOne
   private Link link;
 
   @NonNull

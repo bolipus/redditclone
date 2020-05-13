@@ -5,7 +5,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
-import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,9 +23,6 @@ public class Comment extends Auditable{
 
   @NonNull
   private String body;
-
-  @NonNull
-  private User user;
 
   @ManyToOne
   private Link link; 

@@ -14,7 +14,6 @@ import si.plapt.redclone.config.RedditCloneProperties;
 
 @SpringBootApplication
 @EnableConfigurationProperties(RedditCloneProperties.class)
-@EnableJpaAuditing
 @Slf4j
 public class RedditCloneApplication {
 
