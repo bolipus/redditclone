@@ -10,6 +10,7 @@ class RedditCloneApplicationTests {
 
 	@Test
 	void contextLoads() {
+		
 	}
 
 	
