@@ -4,11 +4,15 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Component;
 
+import lombok.extern.log4j.Log4j2;
+import si.plapt.redclone.entities.Comment;
 import si.plapt.redclone.entities.Link;
 import si.plapt.redclone.entities.Role;
 import si.plapt.redclone.entities.User;
@@ -17,10 +21,12 @@ import si.plapt.redclone.repository.LinkRepository;
 import si.plapt.redclone.repository.RoleRepository;
 import si.plapt.redclone.repository.UserRepository;
 
+@Component
+@Log4j2
 public class DatabaseLoader implements CommandLineRunner {
 
   private LinkRepository linkRepository;
-  //private CommentRepository commentRepository;
+  private CommentRepository commentRepository;
 
   private UserRepository userRepository;
 
@@ -30,7 +36,7 @@ public class DatabaseLoader implements CommandLineRunner {
   public DatabaseLoader(LinkRepository linkRepository, CommentRepository commentRepository,
       UserRepository userRepository, RoleRepository roleRepository) {
     this.linkRepository = linkRepository;
-   // this.commentRepository = commentRepository;
+    this.commentRepository = commentRepository;
     this.userRepository = userRepository;
     this.roleRepository = roleRepository;
   }
@@ -59,9 +65,25 @@ public class DatabaseLoader implements CommandLineRunner {
     links.put("File download example using Spring REST Controller","https://www.jeejava.com/file-download-example-using-spring-rest-controller/");
 
     links.forEach((k,v) -> {
-        linkRepository.save(new Link(k,v));
+
+        Comment comment = new Comment("Test");
+
+        Link link = new Link(k,v);
+        link.addComment(comment);
+      
+        Link savedLink = linkRepository.save(link);
+        log.info("Saved link:" + savedLink);
         // we will do something with comments later
     });
+
+    Optional<Link> linkOpt = linkRepository.findById(1l);
+    if (linkOpt.isPresent()){
+      log.info("----------------------");
+      log.info("Link 1:" + linkOpt.get());
+      log.info("----------------------");
+    }
+
+
 
     long linkCount = linkRepository.count();
     System.out.println("Number of links in the database: " + linkCount );
@@ -72,21 +94,26 @@ public class DatabaseLoader implements CommandLineRunner {
     String secret = "{bcrypt}" + encoder.encode("password");
 
     Role userRole = new Role("ROLE_USER");
-    roleRepository.save(userRole);
+    userRole = roleRepository.save(userRole);
+
     Role adminRole = new Role("ROLE_ADMIN");
-    roleRepository.save(adminRole);
+    adminRole = roleRepository.save(adminRole);
 
     User user = new User("user@gmail.com", secret, true);
     user.addRole(userRole);
-    userRepository.save(user);
+    user = userRepository.save(user);
 
     User admin = new User("admin@gmail.com", secret, true);
     admin.addRole(adminRole);
-    userRepository.save(admin);
+    admin = userRepository.save(admin);
 
     User master = new User("super@gmail.com", secret, true);
     master.addRoles(new HashSet<>(Arrays.asList(userRole, adminRole)));
-    userRepository.save(master);
+    master = userRepository.save(master);
+
+    log.info(user);
+    log.info(admin);
+    log.info(master);
 
   }
 

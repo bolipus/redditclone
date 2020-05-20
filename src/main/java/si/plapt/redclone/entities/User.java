@@ -1,9 +1,11 @@
 package si.plapt.redclone.entities;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.Size;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -33,7 +36,8 @@ public class User implements UserDetails {
   private static final long serialVersionUID = 1858642574410094016L;
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @SequenceGenerator(name="USER_SEQ", allocationSize=25, initialValue = 1)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "USER_SEQ")
   private Long id;
 
   @NonNull
@@ -48,13 +52,13 @@ public class User implements UserDetails {
   @NonNull
   private Boolean enabled;
   
-  @ManyToMany(fetch = FetchType.EAGER)
+  @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
   @JoinTable(
     name = "users_roles",
     joinColumns = @JoinColumn(name="user_id", referencedColumnName = "id"),
     inverseJoinColumns = @JoinColumn(name="role_id", referencedColumnName = "id")
   )
-  private Set<Role> roles;
+  private Set<Role> roles = new HashSet<>();
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -67,12 +71,14 @@ public class User implements UserDetails {
 
   public void addRole(Role userRole) {
     roles.add(userRole);
+    userRole.addUser(this);
   }
 
 
 
   public void addRoles(Set<Role> userRoles) {
     roles.addAll(userRoles);
+    userRoles.forEach(role -> role.addUser(this));
   }
 
   @Override

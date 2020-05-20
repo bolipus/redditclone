@@ -8,5 +8,5 @@ import si.plapt.redclone.entities.Comment;
 
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long>{
-  
+
 }

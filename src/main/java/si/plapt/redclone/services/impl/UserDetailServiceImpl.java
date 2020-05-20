@@ -1,4 +1,4 @@
-package si.plapt.redclone.services;
+package si.plapt.redclone.services.impl;
 
 import java.util.Optional;
 
