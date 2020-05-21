@@ -1,10 +1,8 @@
 package si.plapt.redclone.entities;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -38,6 +36,6 @@ public class Role {
   private List<User> users = new ArrayList<>();
   
   public void addUser(User user){
-    users.add(user);
+    users.add(user);    
   }
 }

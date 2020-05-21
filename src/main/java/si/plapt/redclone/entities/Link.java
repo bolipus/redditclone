@@ -12,9 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 
-import org.hibernate.annotations.Fetch;
-
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -53,18 +50,4 @@ public class Link extends Auditable {
     comments.remove(comment);
     comment.setLink(null);
   }
-
-  public LinkDTO getDTO(){
-    return new LinkDTO(id, title, url);
-  }
-
-  @Data
-  @NoArgsConstructor
-  @AllArgsConstructor
-  public class LinkDTO {
-    private long id;
-    private String title;
-    private String url;
-  }
-  
 }

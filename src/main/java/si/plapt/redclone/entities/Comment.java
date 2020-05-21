@@ -8,7 +8,6 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -32,17 +31,4 @@ public class Comment extends Auditable {
 
   @ManyToOne(fetch = FetchType.LAZY)
   private Link link; 
-
-  public CommentDTO getDTO(){
-    return new CommentDTO(id, body);
-  }
-
-  @Data
-  @NoArgsConstructor
-  @AllArgsConstructor
-  public class CommentDTO {
-    private long id;
-    private String body;
-  }
-
 }
