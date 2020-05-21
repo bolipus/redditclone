@@ -15,5 +15,11 @@ public class LinkDTO {
   private String title;
   private String url;
 
+  private Integer voteCount=0;
+
+  private String domainName;
+
   private List<CommentDTO> comments = new ArrayList<>();
+
+  private List<VoteDTO> votes = new ArrayList<>();
 }

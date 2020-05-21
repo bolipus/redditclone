@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -37,7 +38,7 @@ public class LinkRestController {
     this.modelMapper = modelMapper;
   }
 
-  @GetMapping("/")
+  @GetMapping("")
   public ResponseEntity<List<LinkDTO>> getAllLinks() {
     List<LinkDTO> links = linkService.findAll().stream().map(this::convertDTO).collect(Collectors.toList());
     return ResponseEntity.ok(links);
@@ -53,7 +54,7 @@ public class LinkRestController {
     }
   }
 
-  @PostMapping("/")
+  @PostMapping("")
   public ResponseEntity<LinkDTO> createLink(@RequestBody LinkDTO link) {
     Link savedlink = linkService.saveLink(convertEntity(link));
     return ResponseEntity.ok(convertDTO(savedlink));
@@ -82,6 +83,16 @@ public class LinkRestController {
     }
 
     return ResponseEntity.ok().build();
+  }
+
+  @PostMapping("/{linkId}/vote")
+  public ResponseEntity<Integer> vote(@PathVariable("linkId") Long linkId,
+      @RequestParam(name = "direction", required = true) Short direction) {
+    try {
+      return ResponseEntity.ok(linkService.vote(linkId, direction));
+    } catch (RedCloneException e) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+    }
   }
 
   private LinkDTO convertDTO(Link link) {

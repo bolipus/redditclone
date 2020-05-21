@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @Entity
-public class Vote {
+public class Vote extends Auditable {
   
   @Id
   @SequenceGenerator(name="VOTE_SEQ", allocationSize=25, initialValue = 1)
@@ -25,10 +25,9 @@ public class Vote {
   private long id;
 
   @NonNull
-  @ManyToOne
-  private Link link;
+  private Short direction;
 
   @NonNull
-  private Integer vote;
-
+  @ManyToOne
+  private Link link;
 }

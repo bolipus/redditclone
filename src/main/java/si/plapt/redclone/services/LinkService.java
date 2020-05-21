@@ -18,5 +18,6 @@ public interface LinkService {
 
   void addComment(Long linkId, Comment comment) throws RedCloneException;
 
+  Integer vote(long linkId, short direction) throws RedCloneException;
 
 }
