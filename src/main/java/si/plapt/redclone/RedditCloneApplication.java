@@ -7,12 +7,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import lombok.extern.slf4j.Slf4j;
 import si.plapt.redclone.config.RedditCloneProperties;
 
 @SpringBootApplication
 @EnableConfigurationProperties(RedditCloneProperties.class)
+@EnableTransactionManagement
 @Slf4j
 public class RedditCloneApplication {
 

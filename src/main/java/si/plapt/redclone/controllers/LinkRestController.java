@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,11 +14,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 import si.plapt.redclone.entities.Comment;
 import si.plapt.redclone.entities.Link;
-import si.plapt.redclone.exceptions.RedCloneException;
+import si.plapt.redclone.exceptions.LinkNotFoundException;
 import si.plapt.redclone.models.CommentDTO;
 import si.plapt.redclone.models.LinkDTO;
 import si.plapt.redclone.services.LinkService;
@@ -45,13 +43,9 @@ public class LinkRestController {
   }
 
   @GetMapping("/{linkId}")
-  public ResponseEntity<LinkDTO> getLink(@PathVariable("linkId") Long linkId) {
-    try {
-      Link link = linkService.findById(linkId);
+  public ResponseEntity<LinkDTO> getLink(@PathVariable("linkId") Long linkId) throws LinkNotFoundException {
+    Link link = linkService.findById(linkId);
       return ResponseEntity.ok(convertDTO(link));
-    } catch (RedCloneException e) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-    }
   }
 
   @PostMapping("")
@@ -61,38 +55,25 @@ public class LinkRestController {
   }
 
   @GetMapping("/{linkId}/comments")
-  public ResponseEntity<List<CommentDTO>> getComments(@PathVariable("linkId") Long linkId) {
-    List<CommentDTO> comments;
-    try {
-
-      comments = linkService.getComments(linkId).stream().map(this::convertDTO).collect(Collectors.toList());
-
-    } catch (RedCloneException e) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-    }
+  public ResponseEntity<List<CommentDTO>> getComments(@PathVariable("linkId") Long linkId) throws LinkNotFoundException{
+    List<CommentDTO> comments = linkService.getComments(linkId).stream().map(this::convertDTO).collect(Collectors.toList());;
+   
     return ResponseEntity.ok(comments);
   }
 
   @PostMapping("/{linkId}/comments")
-  public ResponseEntity<Void> addComment(@PathVariable("linkId") Long linkId, @RequestBody CommentDTO commentDTO) {
+  public ResponseEntity<Void> addComment(@PathVariable("linkId") Long linkId, @RequestBody CommentDTO commentDTO)
+      throws LinkNotFoundException {
 
-    try {
-      linkService.addComment(linkId, convertEntity(commentDTO));
-    } catch (RedCloneException e) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-    }
+    linkService.addComment(linkId, convertEntity(commentDTO));
 
     return ResponseEntity.ok().build();
   }
 
   @PostMapping("/{linkId}/vote")
   public ResponseEntity<Integer> vote(@PathVariable("linkId") Long linkId,
-      @RequestParam(name = "direction", required = true) Short direction) {
-    try {
-      return ResponseEntity.ok(linkService.vote(linkId, direction));
-    } catch (RedCloneException e) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-    }
+      @RequestParam(name = "direction", required = true) Short direction) throws LinkNotFoundException{
+        return ResponseEntity.ok(linkService.vote(linkId, direction));
   }
 
   private LinkDTO convertDTO(Link link) {

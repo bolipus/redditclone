@@ -33,6 +33,8 @@ public class DatabaseLoader implements CommandLineRunner {
 
   private RoleRepository roleRepository;
 
+  private Map<String,User> users = new HashMap<>();
+
   @Autowired
   public DatabaseLoader(LinkRepository linkRepository, CommentRepository commentRepository,
       UserRepository userRepository, RoleRepository roleRepository) {
@@ -45,9 +47,10 @@ public class DatabaseLoader implements CommandLineRunner {
   @Override
   public void run(String... args) throws Exception {
 
+    addUsersAndRoles();
+
     addLinks();
 
-    addUsersAndRoles();
 
   }
 
@@ -81,7 +84,14 @@ public class DatabaseLoader implements CommandLineRunner {
 
     links.forEach((k,v) -> {
 
+      User u1 = users.get("user@gmail.com");
+      User u2 = users.get("master@gmail.com");
         Link link = new Link(k,v);
+        if(k.startsWith("Build")) {
+          link.setUser(u1);
+      } else {
+          link.setUser(u2);
+      }
 
         comments.stream()
           .map(Comment::new)
@@ -106,7 +116,7 @@ public class DatabaseLoader implements CommandLineRunner {
 
   private void addUsersAndRoles() {
     BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-    String secret = "{bcrypt}" + encoder.encode("password");
+    String password = "{bcrypt}" + encoder.encode("password");
 
     Role userRole = new Role("ROLE_USER");
     userRole = roleRepository.save(userRole);
@@ -114,17 +124,25 @@ public class DatabaseLoader implements CommandLineRunner {
     Role adminRole = new Role("ROLE_ADMIN");
     adminRole = roleRepository.save(adminRole);
 
-    User user = new User("user@gmail.com", secret, true);
+    boolean isEnabled = true;
+
+    User user = new User("user@gmail.com", password, "Janez", "Kovač", "janezek", isEnabled);
     user.addRole(userRole);
     user = userRepository.save(user);
+    user.setConfirmedPassword(password);
+    users.put(user.getEmail(), user);
 
-    User admin = new User("admin@gmail.com", secret, true);
+    User admin = new User("admin@gmail.com", password,  "Admin", "Admin", "admin", isEnabled);
     admin.addRole(adminRole);
+    admin.setConfirmedPassword(password);
     admin = userRepository.save(admin);
+    users.put(admin.getEmail(), admin);
 
-    User master = new User("super@gmail.com", secret, true);
-    master.addRoles(new HashSet<>(Arrays.asList(userRole, adminRole)));
+    User master = new User("master@gmail.com", "Super", "Super", "super", password, isEnabled);
+    master.addRoles(new HashSet<>(Arrays.asList(userRole, adminRole)));   
     master = userRepository.save(master);
+    master.setConfirmedPassword(password);
+    users.put(master.getEmail(), master);
 
     log.info(user);
     log.info(admin);

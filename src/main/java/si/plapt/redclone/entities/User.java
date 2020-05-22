@@ -2,6 +2,7 @@ package si.plapt.redclone.entities;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -16,6 +17,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -26,11 +28,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 @Data
 @NoArgsConstructor
 @RequiredArgsConstructor
 @Entity
+@ToString(exclude = "roles")
 public class User implements UserDetails {
 
   private static final long serialVersionUID = 1858642574410094016L;
@@ -48,6 +52,25 @@ public class User implements UserDetails {
   @NonNull
   @Column(length = 100)
   private String password;
+
+  @Transient
+  private String confirmedPassword;
+
+  @NonNull
+  private String firstName;
+
+  @NonNull
+  private String lastName;
+
+  @NonNull
+  private String alias;
+
+  private String confirmationCode;
+
+  public String getFullName(){
+    return firstName + " " + lastName;
+  }
+
 
   @NonNull
   private Boolean enabled;
@@ -105,5 +128,7 @@ public class User implements UserDetails {
   public boolean isEnabled() {
     return true;
   }
+
+
 
 }

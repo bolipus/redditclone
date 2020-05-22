@@ -11,6 +11,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 
@@ -42,6 +43,9 @@ public class Link extends Auditable {
 
   @OneToMany(mappedBy = "link", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Comment> comments = new ArrayList<>();
+
+  @ManyToOne
+  private User user;
 
   @OneToMany(mappedBy = "link")
   private List<Vote> votes = new ArrayList<>();
