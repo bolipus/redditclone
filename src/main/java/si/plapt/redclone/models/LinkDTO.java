@@ -1,5 +1,6 @@
 package si.plapt.redclone.models;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +20,15 @@ public class LinkDTO {
 
   private String domainName;
 
-  private List<CommentDTO> comments = new ArrayList<>();
+  private String createdBy;
 
-  private List<VoteDTO> votes = new ArrayList<>();
+  private LocalDateTime createdDate;
+
+  private LocalDateTime modifiedDate;
+
+  private String prettyCreatedDate;
+
+  private String prettyModifiedDate;
+
+  private List<CommentDTO> comments = new ArrayList<>();
 }

@@ -11,22 +11,25 @@ import org.springframework.stereotype.Service;
 import lombok.extern.log4j.Log4j2;
 import si.plapt.redclone.entities.Role;
 import si.plapt.redclone.entities.User;
+import si.plapt.redclone.exceptions.RoleNotFoundException;
 import si.plapt.redclone.exceptions.UserNotFoundException;
 import si.plapt.redclone.repository.RoleRepository;
 import si.plapt.redclone.repository.UserRepository;
+import si.plapt.redclone.services.RoleService;
 import si.plapt.redclone.services.UserService;
 
 @Service
 @Log4j2
 public class UserServiceImpl implements UserService {
 
-  private UserRepository userRepository;
-  private RoleRepository roleRepository;
+  private final UserRepository userRepository;
 
+  private final RoleService roleService;
+  
   @Autowired
-  public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository) {
+  public UserServiceImpl(UserRepository userRepository, RoleService roleService) {
     this.userRepository = userRepository;
-    this.roleRepository = roleRepository;
+    this.roleService = roleService;
   }
 
   public User save(User user){
@@ -34,16 +37,15 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public User register(User user) {
+  public User register(User user) throws RoleNotFoundException {
     BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
     String password = "{bcrypt}" + encoder.encode(user.getPassword());
     user.setEnabled(false);
     user.setPassword(password);
     user.setConfirmedPassword(password);
-    Optional<Role> roleOptional = roleRepository.findByName("ROLE_USER");
-    if (roleOptional.isPresent()){
-      user.addRole(roleOptional.get());
-    }
+    Role role = roleService.findByName("ROLE_USER");
+    user.addRole(role);
+   
     user.setConfirmationCode(UUID.randomUUID().toString());
 
     user = save(user);
@@ -88,9 +90,31 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public List<Role> findAllRoles() {
-    return roleRepository.findAll();
+  public User findByEmailAndPassword(String email, String password) throws UserNotFoundException {
+
+    
+
+    Optional<User> userOptional = userRepository.findByEmail(email);
+    if (!userOptional.isPresent()) {
+      String msg = String.format("User not found.");
+      log.error(msg);
+      throw new UserNotFoundException(msg);
+    }
+    BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+    
+    log.info("Password:" + password);
+    log.info("User Enc. pass.:" + userOptional.get().getPassword());
+
+    if (!encoder.matches(password, userOptional.get().getPassword().replace("{bcrypt}",""))) {
+      String msg = String.format("Passwords does not match.");
+      log.error(msg);
+      throw new UserNotFoundException(msg);
+    }
+
+    return userOptional.get();
   }
+
+  
   
   
 }

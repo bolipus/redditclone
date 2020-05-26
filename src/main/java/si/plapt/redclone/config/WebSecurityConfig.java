@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.web.reactive.config.CorsRegistry;
 
 @Configuration
 @EnableWebSecurity
@@ -36,12 +37,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
       .antMatchers("/actuator/").hasRole("ACTUATOR")
       //.antMatchers("/link/submit").hasRole("USER")
       //.antMatchers("/link/**").permitAll()
+      .antMatchers("/user").permitAll()
       .antMatchers("/error/**").permitAll()
       .antMatchers("/api/v1/**").permitAll()
       .antMatchers("/").permitAll()
       .antMatchers("/h2-console/**").permitAll()
-      .and()
-      .formLogin()
       .and()
       .httpBasic()
       .and()
@@ -55,4 +55,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   protected void configure(AuthenticationManagerBuilder auth) throws Exception {
      auth.userDetailsService(userDetailsService);
   }
+
+
 }

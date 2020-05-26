@@ -24,7 +24,7 @@ public abstract class Auditable {
 
   public static PrettyTime prettyTime = new PrettyTime();
   static {
-    prettyTime.setLocale(new Locale("sl_si"));
+    prettyTime.setLocale(new Locale("en_US"));
   }
 
   @CreatedDate
