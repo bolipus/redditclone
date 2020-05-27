@@ -30,13 +30,6 @@ public class RedditCloneApplication {
 		SpringApplication.run(RedditCloneApplication.class, args);
 	}
 
-	@Bean
-	CommandLineRunner welcome(){
-		return (args) -> {
-			System.out.println("Welcome message:" + prop.getWelcomeMessage());
-			log.debug("Start application");
-		};		
-	}
 
 	@Bean
 	@Profile("dev")

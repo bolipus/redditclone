@@ -1,6 +1,8 @@
 package si.plapt.redclone.controllers.advices;
 
 
+import javax.security.auth.message.AuthException;
+
 import org.springframework.http.HttpStatus;
 
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -34,6 +36,13 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler{
   @ExceptionHandler(RoleNotFoundException.class)  
   @ResponseStatus(HttpStatus.NOT_FOUND)
   public String roleNotFoundHandler(RoleNotFoundException ex) {
+    return ex.getMessage();
+  }
+
+  @ResponseBody
+  @ExceptionHandler(AuthException.class)  
+  @ResponseStatus(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED)
+  public String authFailureHandler(AuthException ex) {
     return ex.getMessage();
   }
   

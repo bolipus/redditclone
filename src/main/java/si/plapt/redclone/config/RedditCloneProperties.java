@@ -9,5 +9,10 @@ import lombok.Data;
 @Data
 public class RedditCloneProperties {
     
-  private String welcomeMessage = "Hello, World"; 
+  private String jwtSecret;
+
+  private String jwtTokenUri;
+
+  private Integer jwtTokenValidyDays;
+
 }

@@ -116,7 +116,8 @@ public class DatabaseLoader implements CommandLineRunner {
 
   private void addUsersAndRoles() {
     BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-    String password = "{bcrypt}" + encoder.encode("password");
+    //String password = "{bcrypt}" + encoder.encode("password");
+    String password = encoder.encode("password");
 
     Role userRole = new Role("ROLE_USER");
     userRole = roleRepository.save(userRole);
