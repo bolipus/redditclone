@@ -23,7 +23,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@EnableAutoConfiguration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @Order(SecurityProperties.DEFAULT_FILTER_ORDER)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -36,9 +35,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
   @Autowired
-  public WebSecurityConfig(UserDetailsService userDetailsService){
+  public WebSecurityConfig(JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, UserDetailsService userDetailsService, JwtRequestFilter jwtRequestFilter) {
+    this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
     this.userDetailsService = userDetailsService;
+    this.jwtRequestFilter = jwtRequestFilter;
   }
+  
 
   @Bean
   public PasswordEncoder passwordEncoder(){
@@ -55,6 +57,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
  @Override
   protected void configure(HttpSecurity http) throws Exception {
+   
+   
 
     http.authorizeRequests()
       .antMatchers("/authenticate").permitAll()
@@ -76,9 +80,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
       .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
       .and()
       .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-      
-
-      //http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+    
+       http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
   }
 
 

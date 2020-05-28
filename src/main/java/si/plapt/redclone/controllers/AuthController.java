@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -70,7 +71,7 @@ public class AuthController {
 
     final String token = jwtTokenUtil.generateToken(userDetails);
 
-
+    log.debug("Token: " + token);
 
     return ResponseEntity.ok(new ResponseTokenDTO(token));
   }
@@ -78,9 +79,8 @@ public class AuthController {
 
   private void authenticate(String username, String password) throws AuthException {
     try {
-      //Authentication auth = 
+     
       authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-     // SecurityContextHolder.getContext().setAuthentication(auth);
     } catch (DisabledException ex) {
       String msg = "User disabled";
       log.error(msg);
@@ -105,6 +105,11 @@ public class AuthController {
     @GetMapping("/authenticatedUser")
     public ResponseEntity<UserDTO> authenticatedUser(HttpServletRequest request) throws AuthException {
       Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+      if (auth instanceof AnonymousAuthenticationToken){
+        throw new AuthException("No user is authenticated");
+      }
+
       if (auth!= null) {
         User user = (User) auth.getPrincipal();
         return ResponseEntity.ok(convertDTO(user));

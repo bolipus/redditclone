@@ -20,6 +20,7 @@ import si.plapt.redclone.exceptions.RoleNotFoundException;
 import si.plapt.redclone.exceptions.UserNotFoundException;
 import si.plapt.redclone.models.RoleDTO;
 import si.plapt.redclone.models.UserDTO;
+import si.plapt.redclone.models.UserRegisterDTO;
 import si.plapt.redclone.services.RoleService;
 import si.plapt.redclone.services.UserService;
 
@@ -41,7 +42,7 @@ public class UserController {
 
 
   @PostMapping("/register")
-  public UserDTO register(@RequestBody UserDTO userDTO) throws RoleNotFoundException {
+  public UserDTO register(@RequestBody UserRegisterDTO userDTO) throws RoleNotFoundException {
     User user = convertEntity(userDTO);
     return convertDTO(userService.register(user));
   }
@@ -78,6 +79,10 @@ public class UserController {
   }
 
   private User convertEntity(UserDTO userDTO) {
+    return modelMapper.map(userDTO, User.class);
+  }
+
+  private User convertEntity(UserRegisterDTO userDTO) {
     return modelMapper.map(userDTO, User.class);
   }
 
