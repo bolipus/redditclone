@@ -37,7 +37,7 @@ import si.plapt.redclone.services.UserService;
 import si.plapt.redclone.services.impl.UserDetailServiceImpl;
 
 @RestController
-@CrossOrigin(origins = { "http://localhost:4200", "http://localhost:9090" })
+@CrossOrigin(origins = { "http://localhost:4200" })
 @Log4j2
 public class AuthController {
 
@@ -62,7 +62,7 @@ public class AuthController {
     this.jwtTokenUtil = jwtTokenUtil;
   }
 
-  @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
+  @PostMapping(value = "/authenticate")
   public ResponseEntity<ResponseTokenDTO> createAuthenticateToken(@RequestBody UserCredentialsDTO userCredentials)
       throws AuthException {
     authenticate(userCredentials.getEmail(), userCredentials.getPassword());

@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
   @Override
   public User register(User user) throws RoleNotFoundException {
     BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-    String password = "{bcrypt}" + encoder.encode(user.getPassword());
+    String password = encoder.encode(user.getPassword());
     user.setEnabled(false);
     user.setPassword(password);
     user.setConfirmedPassword(password);
