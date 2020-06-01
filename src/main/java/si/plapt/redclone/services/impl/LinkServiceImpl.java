@@ -12,7 +12,6 @@ import si.plapt.redclone.entities.Comment;
 import si.plapt.redclone.entities.Link;
 import si.plapt.redclone.entities.Vote;
 import si.plapt.redclone.exceptions.LinkNotFoundException;
-import si.plapt.redclone.exceptions.RedCloneException;
 import si.plapt.redclone.repository.LinkRepository;
 import si.plapt.redclone.repository.VoteRepository;
 import si.plapt.redclone.services.LinkService;
